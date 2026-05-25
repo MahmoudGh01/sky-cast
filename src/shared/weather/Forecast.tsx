@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 
-import Card from "./Card"
+import Card from "../design/Card"
 import toWeather, { type Weather } from "./toWeather"
 
-const Forecast: React.FC<{
+export const Forecast: React.FC<{
   location: {
     name: string
     latitude: number
@@ -25,7 +25,7 @@ const Forecast: React.FC<{
       const response = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=temperature_2m_max,temperature_2m_min,weather_code`,
       )
-      const dailyData = (await response.json()) as {
+      const data = (await response.json()) as {
         daily: {
           time: string[]
           temperature_2m_max: number[]
@@ -35,12 +35,12 @@ const Forecast: React.FC<{
       }
 
       const forecast = []
-      for (let i = 0; i < dailyData.daily.time.length; i++) {
+      for (let i = 0; i < data.daily.time.length; i++) {
         forecast.push({
-          day: dailyData.daily.time[i],
-          temperatureMax: dailyData.daily.temperature_2m_max[i],
-          temperatureMin: dailyData.daily.temperature_2m_min[i],
-          condition: toWeather(dailyData.daily.weather_code[i]),
+          day: data.daily.time[i],
+          temperatureMax: data.daily.temperature_2m_max[i],
+          temperatureMin: data.daily.temperature_2m_min[i],
+          condition: toWeather(data.daily.weather_code[i]),
         })
       }
 
@@ -62,8 +62,6 @@ const Forecast: React.FC<{
     </Card>
   )
 }
-
-export default Forecast
 
 const styles = StyleSheet.create({
   temperatureMax: { fontSize: 18 },

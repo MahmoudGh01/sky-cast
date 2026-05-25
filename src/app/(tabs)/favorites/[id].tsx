@@ -1,8 +1,7 @@
 import { Stack, useLocalSearchParams } from "expo-router"
 import { StyleSheet, Text, View } from "react-native"
 
-import CurrentWeather from "../../../src/CurrentWeather"
-import Forecast from "../../../src/Forecast"
+import { CurrentWeather, Forecast } from "#shared/weather"
 
 const locations: Record<
   string,
@@ -10,7 +9,7 @@ const locations: Record<
 > = {
   lisbon: { name: "Lisbon", latitude: 38.7223, longitude: -9.1393 },
   tokyo: { name: "Tokyo", latitude: 35.6762, longitude: 139.6503 },
-  montreal: { name: "Montreal", latitude: 45.5017, longitude: -73.5673 },
+  dakar: { name: "Dakar", latitude: 14.7167, longitude: -17.4677 },
 }
 
 const App: React.FC = () => {

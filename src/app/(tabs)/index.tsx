@@ -1,8 +1,7 @@
 import { Stack } from "expo-router"
 import { StyleSheet, Text, View } from "react-native"
 
-import CurrentWeather from "../../src/CurrentWeather"
-import Forecast from "../../src/Forecast"
+import { CurrentWeather, Forecast } from "#shared/weather"
 
 const location = { name: "Barcelona", latitude: 41.385063, longitude: 2.173404 }
 
@@ -14,7 +13,7 @@ const App: React.FC = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>SkyCast</Text>
-          <Text style={styles.subtitle}>Morning breeze check</Text>
+          <Text style={styles.subtitle}>Weather, your way</Text>
         </View>
 
         <CurrentWeather location={location} />

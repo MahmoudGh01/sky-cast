@@ -4,7 +4,7 @@ const App: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
-      <Text style={styles.subtitle}>Sky watcher: Mahmoud</Text>
+      <Text style={styles.subtitle}>Sky watcher: M. Gharbi</Text>
     </View>
   )
 }

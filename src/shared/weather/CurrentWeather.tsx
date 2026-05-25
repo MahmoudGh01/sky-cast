@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 
-import Card from "./Card"
+import Card from "../design/Card"
 import toWeather, { type Weather } from "./toWeather"
 
-const CurrentWeather: React.FC<{
+export const CurrentWeather: React.FC<{
   location: {
     name: string
     latitude: number
@@ -24,7 +24,7 @@ const CurrentWeather: React.FC<{
       const response = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current=temperature_2m,is_day,weather_code,wind_speed_10m,relative_humidity_2m,uv_index`,
       )
-      const current = (await response.json()) as {
+      const data = (await response.json()) as {
         current: {
           weather_code: number
           temperature_2m: number
@@ -35,11 +35,11 @@ const CurrentWeather: React.FC<{
       }
 
       setData({
-        condition: toWeather(current.current.weather_code),
-        temperature: current.current.temperature_2m,
-        wind: current.current.wind_speed_10m,
-        humidity: current.current.relative_humidity_2m,
-        uv: current.current.uv_index,
+        condition: toWeather(data.current.weather_code),
+        temperature: data.current.temperature_2m,
+        wind: data.current.wind_speed_10m,
+        humidity: data.current.relative_humidity_2m,
+        uv: data.current.uv_index,
       })
     })()
   }, [location])
@@ -73,8 +73,6 @@ const CurrentWeather: React.FC<{
     </Card>
   )
 }
-
-export default CurrentWeather
 
 const styles = StyleSheet.create({
   current: { alignItems: "center", marginBottom: 24 },

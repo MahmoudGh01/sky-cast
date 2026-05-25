@@ -9,7 +9,7 @@ const Layout: React.FC = () => {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar style="light" />
+      <StatusBar style="auto" />
     </>
   )
 }

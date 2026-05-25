@@ -2,6 +2,9 @@
   "name": "skycast",
   "type": "module",
   "main": "expo-router/entry",
+  "imports": {
+    "#shared/*": "./src/shared/*/index.ts"
+  },
   "version": "1.0.0",
   "scripts": {
     "lint": "npm run lint-typecheck && npm run lint-eslint && npm run lint-prettier && npm run lint-knip",
