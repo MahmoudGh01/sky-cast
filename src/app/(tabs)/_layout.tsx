@@ -1,12 +1,14 @@
 import { Tabs } from "expo-router"
 
+import { colors } from "#design/foundations"
+
 const Layout: React.FC = () => {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#0b4f6c",
-        tabBarStyle: { backgroundColor: "#f7fbff" },
+        tabBarActiveTintColor: colors.brand,
+        tabBarStyle: { backgroundColor: colors.background },
       }}
     >
       <Tabs.Screen name="index" options={{ title: "Home" }} />

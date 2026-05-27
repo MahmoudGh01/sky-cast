@@ -3,7 +3,8 @@
   "type": "module",
   "main": "expo-router/entry",
   "imports": {
-    "#shared/*": "./src/shared/*/index.ts"
+    "#shared/*": "./src/shared/*/index.ts",
+    "#design/*": "./src/shared/design/*/index.ts"
   },
   "version": "1.0.0",
   "scripts": {

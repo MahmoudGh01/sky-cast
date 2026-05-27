@@ -1,6 +1,9 @@
 import { Stack } from "expo-router"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
+import Typography from "#design/elements/Typography"
+import { spacing } from "#design/foundations"
+import Screen from "#design/patterns/Screen"
 import { CurrentWeather, Forecast } from "#shared/weather"
 
 const location = { name: "Barcelona", latitude: 41.385063, longitude: 2.173404 }
@@ -10,15 +13,15 @@ const App: React.FC = () => {
     <>
       <Stack.Screen options={{ title: "Home" }} />
 
-      <View style={styles.container}>
+      <Screen>
         <View style={styles.header}>
-          <Text style={styles.title}>SkyCast</Text>
-          <Text style={styles.subtitle}>Weather, your way</Text>
+          <Typography variant="title">SkyCast</Typography>
+          <Typography variant="subtitle">Weather, your way</Typography>
         </View>
 
         <CurrentWeather location={location} />
         <Forecast location={location} />
-      </View>
+      </Screen>
     </>
   )
 }
@@ -26,23 +29,8 @@ const App: React.FC = () => {
 export default App
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f7fbff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   header: {
     alignItems: "center",
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#0b4f6c",
-  },
-  subtitle: {
-    fontSize: 13,
-    color: "#4b6b7c",
+    marginBottom: spacing.sm,
   },
 })
