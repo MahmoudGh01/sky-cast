@@ -10,7 +10,8 @@ import { type WeatherLocation } from "./types"
 
 export const CurrentWeather: React.FC<{
   location: WeatherLocation
-}> = ({ location }) => {
+  useMetricUnits?: boolean
+}> = ({ location, useMetricUnits = true }) => {
   const [data, setData] = useState<{
     condition: Weather
     temperature: number
@@ -47,7 +48,15 @@ export const CurrentWeather: React.FC<{
   return (
     <Card>
       <View style={styles.current}>
-        <Typography variant="title">{data?.temperature ?? "--"} C</Typography>
+        <Typography variant="title">
+          {data
+            ? `${
+                useMetricUnits
+                  ? data.temperature.toFixed(0)
+                  : ((data.temperature * 9) / 5 + 32).toFixed(0)
+              } ${useMetricUnits ? "C" : "F"}`
+            : "--"}
+        </Typography>
         <Typography variant="muted">{location.name}</Typography>
         <Typography variant="label">{data?.condition ?? "--"}</Typography>
       </View>
@@ -55,7 +64,13 @@ export const CurrentWeather: React.FC<{
       <View style={styles.stats}>
         <View style={styles.stat}>
           <Typography variant="large">
-            {data?.wind.toFixed(0) ?? "--"} km/h
+            {data
+              ? `${
+                  useMetricUnits
+                    ? data.wind.toFixed(0)
+                    : (data.wind * 0.621371).toFixed(0)
+                } ${useMetricUnits ? "km/h" : "mph"}`
+              : "--"}
           </Typography>
           <Typography variant="label">Wind</Typography>
         </View>

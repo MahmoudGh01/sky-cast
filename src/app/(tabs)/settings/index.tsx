@@ -1,25 +1,15 @@
-import { StyleSheet } from "react-native"
+import { Stack } from "expo-router"
 
-import Typography from "#design/elements/Typography"
-import { spacing } from "#design/foundations"
-import Screen from "#design/patterns/Screen"
+import { SettingsScreen } from "#shared/settings"
 
 const App: React.FC = () => {
   return (
-    <Screen>
-      <Typography variant="heading">Settings</Typography>
-      <Typography variant="subtitle" style={styles.subtitle}>
-        Tune units and app behavior in class later.
-      </Typography>
-    </Screen>
+    <>
+      <Stack.Screen options={{ title: "Settings" }} />
+
+      <SettingsScreen />
+    </>
   )
 }
 
 export default App
-
-const styles = StyleSheet.create({
-  subtitle: {
-    marginTop: spacing.sm,
-    textAlign: "center",
-  },
-})

@@ -10,7 +10,8 @@ import { type WeatherLocation } from "./types"
 
 export const Forecast: React.FC<{
   location: WeatherLocation
-}> = ({ location }) => {
+  useMetricUnits?: boolean
+}> = ({ location, useMetricUnits = true }) => {
   const [data, setData] = useState<
     Array<{
       day: string
@@ -53,8 +54,16 @@ export const Forecast: React.FC<{
       <ScrollView horizontal style={styles.days}>
         {data?.map(({ day, temperatureMax, temperatureMin, condition }) => (
           <View key={day} style={styles.day}>
-            <Typography variant="large">{temperatureMax} C</Typography>
-            <Typography variant="muted">{temperatureMin} C</Typography>
+            <Typography variant="large">
+              {useMetricUnits
+                ? `${temperatureMax.toFixed(0)} C`
+                : `${((temperatureMax * 9) / 5 + 32).toFixed(0)} F`}
+            </Typography>
+            <Typography variant="muted">
+              {useMetricUnits
+                ? `${temperatureMin.toFixed(0)} C`
+                : `${((temperatureMin * 9) / 5 + 32).toFixed(0)} F`}
+            </Typography>
             <Typography variant="label">{condition}</Typography>
           </View>
         ))}
