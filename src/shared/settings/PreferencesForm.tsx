@@ -71,6 +71,7 @@ const PreferencesForm: React.FC<PreferencesFormProps> = ({
           <Typography variant="muted">Celsius and km/h</Typography>
         </View>
         <Switch
+          testID="useMetricUnitsSwitch"
           value={preferences.useMetricUnits}
           onValueChange={onUseMetricUnitsChange}
           thumbColor={colors.surface}
@@ -86,6 +87,7 @@ const PreferencesForm: React.FC<PreferencesFormProps> = ({
           </Typography>
         </View>
         <Switch
+          testID="severeAlertsOnlySwitch"
           value={preferences.severeAlertsOnly}
           onValueChange={onSevereAlertsOnlyChange}
           thumbColor={colors.surface}
