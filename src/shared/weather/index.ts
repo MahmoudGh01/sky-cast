@@ -1,3 +1,5 @@
 export * from "./CurrentWeather"
 export * from "./Forecast"
+export * from "./HourlyForecast"
+export * from "./WeatherAlerts"
 export * from "./types"
