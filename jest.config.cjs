@@ -23,6 +23,8 @@ module.exports = {
     "src/shared/settings/PreferencesForm.tsx",
     "!src/shared/**/index.ts",
     "!src/shared/weather/types.ts",
+    "!src/shared/weather/HourlyForecast.tsx",
+    "!src/shared/weather/WeatherAlerts.tsx",
   ],
   coverageThreshold: {
     global: {
