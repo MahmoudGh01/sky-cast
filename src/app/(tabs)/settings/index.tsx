@@ -5,7 +5,7 @@ import { SettingsScreen } from "#shared/settings"
 const App: React.FC = () => {
   return (
     <>
-      <Stack.Screen options={{ title: "Settings" }} />
+      <Stack.Screen options={{ headerShown: false }} />
 
       <SettingsScreen />
     </>
