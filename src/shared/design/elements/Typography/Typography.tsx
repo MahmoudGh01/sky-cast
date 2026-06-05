@@ -4,6 +4,11 @@ import { type StyleProp, type TextStyle, StyleSheet, Text } from "react-native"
 import {
   badge,
   body,
+  bodySecondary,
+  caption,
+  displayLarge,
+  displayMedium,
+  displaySmall,
   heading,
   label,
   large,
@@ -11,18 +16,27 @@ import {
   strongLabel,
   subtitle,
   title,
+  title2,
+  title3,
 } from "../../foundations/typography"
 
 const variants = {
+  displayLarge,
+  displayMedium,
+  displaySmall,
   title,
+  title2,
+  title3,
   subtitle,
   heading,
   body,
+  bodySecondary,
   large,
   muted,
   label,
   strongLabel,
   badge,
+  caption,
 }
 
 type TypographyProps = {

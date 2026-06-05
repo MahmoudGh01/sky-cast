@@ -1,7 +1,7 @@
 import { type LinkProps, Link } from "expo-router"
 import { Pressable, StyleSheet, View } from "react-native"
 
-import { colors, shapes, spacing } from "#design/foundations"
+import { colors, shadows, shapes, spacing } from "#design/foundations"
 
 import Typography from "../Typography"
 
@@ -16,8 +16,8 @@ const LinkButton: React.FC<LinkButtonProps> = ({ label, ...props }) => {
   return (
     <Link {...props} asChild>
       <Pressable style={styles.button}>
-        <View>
-          <Typography variant="strongLabel">{label}</Typography>
+        <View style={styles.content}>
+          <Typography variant="body">{label}</Typography>
         </View>
       </Pressable>
     </Link>
@@ -28,11 +28,17 @@ export default LinkButton
 
 const styles = StyleSheet.create({
   button: {
-    width: 220,
-    backgroundColor: colors.surfaceAccent,
-    borderRadius: shapes.radiusSm,
-    paddingVertical: spacing.md,
-    marginVertical: spacing.xs + 2,
+    width: "100%",
+    backgroundColor: colors.surface,
+    borderRadius: shapes.radiusLg,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    marginVertical: spacing.xs,
+    ...shadows.card,
+  },
+  content: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
 })
