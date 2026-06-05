@@ -1,4 +1,5 @@
 export * as colors from "./colors"
+export * as gradients from "./gradients"
 export * as shadows from "./shadows"
 export * as shapes from "./shapes"
 export * as spacing from "./spacing"
