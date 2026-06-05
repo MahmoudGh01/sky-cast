@@ -7,6 +7,7 @@ import { spacing } from "#design/foundations"
 
 import toWeather, { type Weather } from "./toWeather"
 import { type WeatherLocation } from "./types"
+import WeatherIcon from "./WeatherIcon"
 
 export const CurrentWeather: React.FC<{
   location: WeatherLocation
@@ -18,6 +19,7 @@ export const CurrentWeather: React.FC<{
     wind: number
     humidity: number
     uv: number
+    weatherCode: number
   }>()
 
   useEffect(() => {
@@ -41,29 +43,52 @@ export const CurrentWeather: React.FC<{
         wind: data.current.wind_speed_10m,
         humidity: data.current.relative_humidity_2m,
         uv: data.current.uv_index,
+        weatherCode: data.current.weather_code,
       })
     })()
   }, [location])
 
+  const tempCelsius = data?.temperature ?? 0
+  const tempFahrenheit = (tempCelsius * 9) / 5 + 32
+  const displayTemp = useMetricUnits
+    ? tempCelsius.toFixed(0)
+    : tempFahrenheit.toFixed(0)
+  const tempUnit = useMetricUnits ? "°" : "°"
+
   return (
-    <Card>
-      <View style={styles.current}>
-        <Typography variant="title">
-          {data
-            ? `${
-                useMetricUnits
-                  ? data.temperature.toFixed(0)
-                  : ((data.temperature * 9) / 5 + 32).toFixed(0)
-              } ${useMetricUnits ? "C" : "F"}`
-            : "--"}
-        </Typography>
-        <Typography variant="muted">{location.name}</Typography>
-        <Typography variant="label">{data?.condition ?? "--"}</Typography>
+    <View style={styles.container}>
+      {/* Location Name */}
+      <View style={styles.header}>
+        <Typography variant="title2">{location.name}</Typography>
+        <Typography variant="large">{data?.condition ?? "--"}</Typography>
       </View>
 
-      <View style={styles.stats}>
-        <View style={styles.stat}>
-          <Typography variant="large">
+      {/* Large Temperature Display */}
+      <View style={styles.temperatureSection}>
+        <View style={styles.temperatureRow}>
+          <Typography variant="displayLarge" style={styles.temperature}>
+            {data ? displayTemp : "--"}
+          </Typography>
+          <Typography variant="displaySmall" style={styles.unit}>
+            {tempUnit}
+          </Typography>
+        </View>
+        {data && (
+          <WeatherIcon
+            weatherCode={data.weatherCode}
+            size={100}
+            style={styles.weatherIcon}
+          />
+        )}
+      </View>
+
+      {/* Weather Details Cards */}
+      <View style={styles.detailsGrid}>
+        <Card variant="glass" style={styles.detailCard}>
+          <Typography variant="caption" style={styles.detailLabel}>
+            WIND
+          </Typography>
+          <Typography variant="title3" style={styles.detailValue}>
             {data
               ? `${
                   useMetricUnits
@@ -72,25 +97,75 @@ export const CurrentWeather: React.FC<{
                 } ${useMetricUnits ? "km/h" : "mph"}`
               : "--"}
           </Typography>
-          <Typography variant="label">Wind</Typography>
-        </View>
-        <View style={styles.stat}>
-          <Typography variant="large">
-            {data?.humidity.toFixed(0) ?? "--"}%
+        </Card>
+
+        <Card variant="glass" style={styles.detailCard}>
+          <Typography variant="caption" style={styles.detailLabel}>
+            HUMIDITY
           </Typography>
-          <Typography variant="label">Humidity</Typography>
-        </View>
-        <View style={styles.stat}>
-          <Typography variant="large">{data?.uv.toFixed(0) ?? "--"}</Typography>
-          <Typography variant="label">UV</Typography>
-        </View>
+          <Typography variant="title3" style={styles.detailValue}>
+            {data ? `${data.humidity.toFixed(0)}%` : "--"}
+          </Typography>
+        </Card>
+
+        <Card variant="glass" style={styles.detailCard}>
+          <Typography variant="caption" style={styles.detailLabel}>
+            UV INDEX
+          </Typography>
+          <Typography variant="title3" style={styles.detailValue}>
+            {data?.uv.toFixed(0) ?? "--"}
+          </Typography>
+        </Card>
       </View>
-    </Card>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  current: { alignItems: "center", marginBottom: spacing.xl },
-  stats: { flexDirection: "row" },
-  stat: { flex: 1, alignItems: "center" },
+  container: {
+    paddingHorizontal: spacing.lg,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: spacing.xxl,
+    marginTop: spacing.xxxl,
+  },
+  temperatureSection: {
+    alignItems: "center",
+    marginBottom: spacing.xxxl,
+  },
+  temperatureRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  temperature: {
+    lineHeight: 96,
+  },
+  unit: {
+    marginTop: spacing.md,
+    lineHeight: 48,
+  },
+  weatherIcon: {
+    marginTop: spacing.lg,
+  },
+  detailsGrid: {
+    flexDirection: "row",
+    gap: spacing.md,
+    flexWrap: "wrap",
+  },
+  detailCard: {
+    flex: 1,
+    minWidth: 100,
+    alignItems: "flex-start",
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.lg,
+  },
+  detailLabel: {
+    marginBottom: spacing.xs,
+    opacity: 0.8,
+  },
+  detailValue: {
+    fontWeight: "600",
+  },
 })

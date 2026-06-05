@@ -7,12 +7,14 @@ import { colors, spacing } from "#design/foundations"
 
 import toWeather, { type Weather } from "./toWeather"
 import { type WeatherLocation } from "./types"
+import WeatherIcon from "./WeatherIcon"
 
 type HourData = {
   hour: string
   temperature: number
   condition: Weather
   precipitation: number
+  weatherCode: number
 }
 
 // Generate initial 24 hours of forecast data
@@ -32,6 +34,7 @@ const generateHourlyData = (startHour: number, count: number): HourData[] => {
       temperature: Math.round(randomTemp),
       condition: toWeather(randomCode),
       precipitation: Math.round(randomPrecip),
+      weatherCode: randomCode,
     })
   }
 
@@ -73,26 +76,26 @@ export const HourlyForecast: React.FC<{
     const isNow = index === 0
 
     return (
-      <Card style={[styles.hourCard, isNow && styles.currentHourCard]}>
-        <Typography
-          variant={isNow ? "strongLabel" : "label"}
-          style={styles.hour}
-        >
+      <Card
+        variant="glass"
+        style={[styles.hourCard, isNow && styles.currentHourCard]}
+      >
+        <Typography variant="caption" style={styles.hour}>
           {isNow ? "Now" : item.hour}
         </Typography>
-        <Typography variant="title" style={styles.temperature}>
+        <WeatherIcon
+          weatherCode={item.weatherCode}
+          size={32}
+          color={colors.body}
+          style={styles.icon}
+        />
+        <Typography variant="title3" style={styles.temperature}>
           {useMetricUnits
-            ? `${item.temperature}°C`
-            : `${Math.round((item.temperature * 9) / 5 + 32)}°F`}
-        </Typography>
-        <Typography variant="body" style={styles.condition}>
-          {item.condition}
+            ? `${item.temperature}°`
+            : `${Math.round((item.temperature * 9) / 5 + 32)}°`}
         </Typography>
         <View style={styles.precipRow}>
-          <Typography variant="muted" style={styles.precipIcon}>
-            💧
-          </Typography>
-          <Typography variant="muted" style={styles.precipitation}>
+          <Typography variant="caption" style={styles.precipitation}>
             {item.precipitation}%
           </Typography>
         </View>
@@ -115,86 +118,74 @@ export const HourlyForecast: React.FC<{
 
   const renderHeader = () => (
     <View style={styles.header}>
-      <Typography variant="heading">Hourly Forecast</Typography>
-      <Typography variant="muted">{location.name}</Typography>
-      <Typography variant="muted" style={styles.headerSubtitle}>
-        Scroll for more hours
-      </Typography>
+      <Typography variant="label">HOURLY FORECAST</Typography>
     </View>
   )
 
   return (
-    <FlatList
-      data={data}
-      renderItem={renderItem}
-      keyExtractor={(item, index) => `${item.hour}-${index}`}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
-      ListHeaderComponent={renderHeader}
-      ListFooterComponent={renderFooter}
-      onEndReached={loadMoreData}
-      onEndReachedThreshold={0.5}
-      initialNumToRender={10}
-      maxToRenderPerBatch={10}
-      windowSize={5}
-    />
+    <View style={styles.wrapper}>
+      {renderHeader()}
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `${item.hour}-${index}`}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.container}
+        ListFooterComponent={renderFooter}
+        onEndReached={loadMoreData}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+      />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    marginVertical: spacing.lg,
+  },
   container: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.lg,
-    gap: spacing.md,
+    paddingHorizontal: spacing.lg,
+    gap: spacing.sm,
   },
   header: {
-    alignItems: "center",
-    marginRight: spacing.lg,
-    paddingRight: spacing.lg,
-    borderRightWidth: 2,
-    borderRightColor: colors.brand,
-  },
-  headerSubtitle: {
-    marginTop: spacing.xs,
-    fontSize: 11,
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.md,
   },
   hourCard: {
-    width: 100,
-    padding: spacing.md,
+    width: 70,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xs,
     alignItems: "center",
+    minHeight: 120,
   },
   currentHourCard: {
-    borderWidth: 2,
-    borderColor: colors.brand,
-    backgroundColor: colors.surfaceAccent,
+    borderWidth: 1,
+    borderColor: colors.body,
   },
   hour: {
-    marginBottom: spacing.xs,
+    marginBottom: spacing.sm,
+    opacity: 0.8,
+  },
+  icon: {
+    marginVertical: spacing.sm,
   },
   temperature: {
-    marginVertical: spacing.xs,
-    fontSize: 24,
-  },
-  condition: {
-    textAlign: "center",
-    fontSize: 12,
-    marginBottom: spacing.xs,
+    marginTop: spacing.sm,
+    fontSize: 20,
+    fontWeight: "600",
   },
   precipRow: {
-    flexDirection: "row",
-    alignItems: "center",
     marginTop: spacing.xs,
   },
-  precipIcon: {
-    marginRight: 2,
-    fontSize: 10,
-  },
   precipitation: {
-    fontSize: 11,
+    opacity: 0.6,
   },
   footer: {
-    width: 100,
+    width: 70,
     alignItems: "center",
     justifyContent: "center",
     padding: spacing.md,

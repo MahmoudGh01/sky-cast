@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
-import { ScrollView, StyleSheet, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 import Card from "#design/elements/Card"
 import Typography from "#design/elements/Typography"
-import { spacing } from "#design/foundations"
+import { colors, spacing } from "#design/foundations"
 
 import toWeather, { type Weather } from "./toWeather"
 import { type WeatherLocation } from "./types"
+import WeatherIcon from "./WeatherIcon"
 
 export const Forecast: React.FC<{
   location: WeatherLocation
@@ -18,6 +19,7 @@ export const Forecast: React.FC<{
       temperatureMax: number
       temperatureMin: number
       condition: Weather
+      weatherCode: number
     }>
   >()
 
@@ -42,6 +44,7 @@ export const Forecast: React.FC<{
           temperatureMax: data.daily.temperature_2m_max[i],
           temperatureMin: data.daily.temperature_2m_min[i],
           condition: toWeather(data.daily.weather_code[i]),
+          weatherCode: data.daily.weather_code[i],
         })
       }
 
@@ -49,30 +52,98 @@ export const Forecast: React.FC<{
     })()
   }, [location])
 
+  const getDayName = (dateString: string, index: number): string => {
+    if (index === 0) return "Today"
+    const date = new Date(dateString)
+    return date.toLocaleDateString("en-US", { weekday: "short" })
+  }
+
   return (
-    <Card>
-      <ScrollView horizontal style={styles.days}>
-        {data?.map(({ day, temperatureMax, temperatureMin, condition }) => (
-          <View key={day} style={styles.day}>
-            <Typography variant="large">
-              {useMetricUnits
-                ? `${temperatureMax.toFixed(0)} C`
-                : `${((temperatureMax * 9) / 5 + 32).toFixed(0)} F`}
+    <Card variant="glass" style={styles.container}>
+      <View style={styles.header}>
+        <Typography variant="label">7-DAY FORECAST</Typography>
+      </View>
+      {data?.map(
+        (
+          { day, temperatureMax, temperatureMin, condition, weatherCode },
+          index,
+        ) => (
+          <View key={day} style={styles.dayRow}>
+            <Typography variant="body" style={styles.dayName}>
+              {getDayName(day, index)}
             </Typography>
-            <Typography variant="muted">
-              {useMetricUnits
-                ? `${temperatureMin.toFixed(0)} C`
-                : `${((temperatureMin * 9) / 5 + 32).toFixed(0)} F`}
-            </Typography>
-            <Typography variant="label">{condition}</Typography>
+            <View style={styles.weatherInfo}>
+              <WeatherIcon
+                weatherCode={weatherCode}
+                size={28}
+                color={colors.body}
+              />
+            </View>
+            <View style={styles.temperatureRange}>
+              <Typography variant="bodySecondary" style={styles.tempMin}>
+                {useMetricUnits
+                  ? `${temperatureMin.toFixed(0)}°`
+                  : `${((temperatureMin * 9) / 5 + 32).toFixed(0)}°`}
+              </Typography>
+              <View style={styles.temperatureBar} />
+              <Typography variant="body" style={styles.tempMax}>
+                {useMetricUnits
+                  ? `${temperatureMax.toFixed(0)}°`
+                  : `${((temperatureMax * 9) / 5 + 32).toFixed(0)}°`}
+              </Typography>
+            </View>
           </View>
-        ))}
-      </ScrollView>
+        ),
+      )}
     </Card>
   )
 }
 
 const styles = StyleSheet.create({
-  days: { flexGrow: 0, flexDirection: "row" },
-  day: { flex: 1, alignItems: "center", marginHorizontal: spacing.lg },
+  container: {
+    marginHorizontal: spacing.lg,
+    marginVertical: spacing.lg,
+    paddingVertical: spacing.lg,
+  },
+  header: {
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  dayRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderBottomWidth: 0.5,
+    borderBottomColor: colors.subtle,
+  },
+  dayName: {
+    flex: 1,
+    fontWeight: "500",
+  },
+  weatherInfo: {
+    marginHorizontal: spacing.lg,
+  },
+  temperatureRange: {
+    flexDirection: "row",
+    alignItems: "center",
+    minWidth: 120,
+  },
+  tempMin: {
+    width: 35,
+    textAlign: "right",
+    opacity: 0.6,
+  },
+  temperatureBar: {
+    height: 4,
+    flex: 1,
+    backgroundColor: colors.surfaceStrong,
+    borderRadius: 2,
+    marginHorizontal: spacing.sm,
+  },
+  tempMax: {
+    width: 35,
+    textAlign: "left",
+    fontWeight: "600",
+  },
 })

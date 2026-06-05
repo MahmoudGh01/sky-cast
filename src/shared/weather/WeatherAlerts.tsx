@@ -112,24 +112,18 @@ const weatherAlerts: AlertSection[] = [
   },
 ]
 
-const severityColors: Record<
-  AlertSeverity,
-  { border: string; background: string; text: string }
-> = {
+const severityColors: Record<AlertSeverity, { icon: string; color: string }> = {
   severe: {
-    border: "#dc2626",
-    background: "#fee2e2",
-    text: "#991b1b",
+    icon: "⚠️",
+    color: colors.alerts.severe,
   },
   moderate: {
-    border: "#f59e0b",
-    background: "#fef3c7",
-    text: "#92400e",
+    icon: "⚡",
+    color: colors.alerts.moderate,
   },
   minor: {
-    border: "#3b82f6",
-    background: "#dbeafe",
-    text: "#1e3a8a",
+    icon: "ℹ️",
+    color: colors.alerts.minor,
   },
 }
 
@@ -145,25 +139,12 @@ export const WeatherAlerts: React.FC = () => {
 
   const renderSectionHeader = ({ section }: { section: AlertSection }) => (
     <View style={styles.sectionHeader}>
-      <Typography variant="heading" style={styles.sectionTitle}>
-        {section.title}
+      <Typography variant="caption" style={styles.sectionTitle}>
+        {section.title.toUpperCase()}
       </Typography>
-      <View
-        style={[
-          styles.badge,
-          { backgroundColor: severityColors[section.severity].background },
-        ]}
-      >
-        <Typography
-          variant="label"
-          style={[
-            styles.badgeText,
-            { color: severityColors[section.severity].text },
-          ]}
-        >
-          {section.data.length} {section.data.length === 1 ? "alert" : "alerts"}
-        </Typography>
-      </View>
+      <Typography variant="caption" style={styles.badgeText}>
+        {section.data.length}
+      </Typography>
     </View>
   )
 
@@ -171,27 +152,28 @@ export const WeatherAlerts: React.FC = () => {
     const colorScheme = severityColors[item.severity]
 
     return (
-      <Card
-        style={[
-          styles.alertCard,
-          {
-            borderLeftWidth: 4,
-            borderLeftColor: colorScheme.border,
-            backgroundColor: colorScheme.background,
-          },
-        ]}
-      >
-        <View style={styles.alertHeader}>
-          <Typography variant="strongLabel" style={styles.alertTitle}>
-            {item.title}
-          </Typography>
-          <Typography variant="muted" style={styles.alertTime}>
-            {item.time}
-          </Typography>
+      <Card variant="glass" style={styles.alertCard}>
+        <View style={styles.alertContent}>
+          <View
+            style={[
+              styles.severityIndicator,
+              { backgroundColor: colorScheme.color },
+            ]}
+          />
+          <View style={styles.alertBody}>
+            <View style={styles.alertHeader}>
+              <Typography variant="heading" style={styles.alertTitle}>
+                {item.title}
+              </Typography>
+              <Typography variant="caption" style={styles.alertTime}>
+                {item.time}
+              </Typography>
+            </View>
+            <Typography variant="bodySecondary" style={styles.alertDescription}>
+              {item.description}
+            </Typography>
+          </View>
         </View>
-        <Typography variant="body" style={styles.alertDescription}>
-          {item.description}
-        </Typography>
       </Card>
     )
   }
@@ -236,7 +218,7 @@ export const WeatherAlerts: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: spacing.lg,
     paddingBottom: spacing.xl,
   },
   listHeader: {
@@ -251,47 +233,51 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: colors.background,
-    paddingVertical: spacing.sm,
-    marginBottom: spacing.md,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    marginBottom: spacing.sm,
   },
   sectionTitle: {
     flex: 1,
-  },
-  badge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: 12,
+    opacity: 0.6,
   },
   badgeText: {
-    fontSize: 12,
-    fontWeight: "600",
+    opacity: 0.6,
   },
   sectionFooter: {
     height: spacing.lg,
   },
   alertCard: {
     marginBottom: spacing.md,
-    padding: spacing.md,
-    alignItems: "flex-start",
+    padding: 0,
+    overflow: "hidden",
+  },
+  alertContent: {
+    flexDirection: "row",
+  },
+  severityIndicator: {
+    width: 4,
+  },
+  alertBody: {
+    flex: 1,
+    padding: spacing.lg,
   },
   alertHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    width: "100%",
-    marginBottom: spacing.xs,
+    marginBottom: spacing.sm,
   },
   alertTitle: {
     flex: 1,
     marginRight: spacing.sm,
+    fontSize: 17,
   },
   alertTime: {
-    fontSize: 11,
+    opacity: 0.6,
   },
   alertDescription: {
-    width: "100%",
-    textAlign: "left",
+    lineHeight: 20,
   },
   emptyContainer: {
     alignItems: "center",
