@@ -1,9 +1,10 @@
 import { ScrollView, StyleSheet, View } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
+import GradientBackground from "#design/elements/GradientBackground"
 import LinkButton from "#design/elements/LinkButton"
 import Typography from "#design/elements/Typography"
 import { spacing } from "#design/foundations"
-import Screen from "#design/patterns/Screen"
 import {
   CurrentWeather,
   Forecast,
@@ -14,106 +15,92 @@ import {
 import { useHomeBehavior } from "./useHomeBehavior"
 
 const HomeScreen: React.FC = () => {
-  const {
-    isHydrated,
-    location,
-    displayName,
-    dailySummaryTime,
-    severeAlertsOnly,
-    useMetricUnits,
-    favorites,
-  } = useHomeBehavior()
+  const { isHydrated, location, useMetricUnits, favorites } = useHomeBehavior()
+  const insets = useSafeAreaInsets()
+
+  // Get current weather code for gradient background
+  // For now, using a default sunny day (code 0)
+  // This should be fetched from the weather API in a real implementation
+  const weatherCode = 1 // Partly cloudy as default
+  const isNight = new Date().getHours() >= 18 || new Date().getHours() < 6
 
   return (
-    <Screen style={styles.screen}>
+    <GradientBackground weatherCode={weatherCode} isNight={isNight}>
       {!isHydrated ? (
-        <Typography variant="muted">
-          Loading your saved preferences...
-        </Typography>
+        <View style={[styles.loadingContainer, { paddingTop: insets.top }]}>
+          <Typography variant="muted">
+            Loading your saved preferences...
+          </Typography>
+        </View>
       ) : (
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[
+            styles.scrollContent,
+            {
+              paddingTop: insets.top,
+              paddingBottom: insets.bottom + 100,
+            },
+          ]}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.header}>
-            <Typography variant="title">SkyCast</Typography>
-            <Typography variant="subtitle">Welcome, {displayName}</Typography>
-            <Typography variant="muted">
-              Daily summary: {dailySummaryTime} • Alerts:{" "}
-              {severeAlertsOnly ? "Severe" : "All"}
-            </Typography>
-          </View>
-
           <CurrentWeather location={location} useMetricUnits={useMetricUnits} />
 
-          <View style={styles.section}>
-            <Typography variant="heading" style={styles.sectionTitle}>
-              Hourly Forecast
-            </Typography>
-            <HourlyForecast
-              location={location}
-              useMetricUnits={useMetricUnits}
-            />
-          </View>
+          <HourlyForecast location={location} useMetricUnits={useMetricUnits} />
 
           <Forecast location={location} useMetricUnits={useMetricUnits} />
 
           <View style={styles.section}>
-            <Typography variant="heading" style={styles.sectionTitle}>
-              Active Alerts
-            </Typography>
             <View style={styles.alertsContainer}>
               <WeatherAlerts />
             </View>
           </View>
 
           <View style={styles.favoritesSection}>
-            <Typography variant="label">Quick jump to favorites</Typography>
+            <Typography variant="caption" style={styles.favoritesLabel}>
+              MY LOCATIONS
+            </Typography>
             {favorites.map((favorite) => (
               <LinkButton
                 key={favorite.id}
                 href={`/favorites/${favorite.id}`}
-                label={favorite.name.toUpperCase()}
+                label={favorite.name}
               />
             ))}
           </View>
         </ScrollView>
       )}
-    </Screen>
+    </GradientBackground>
   )
 }
 
 export default HomeScreen
 
 const styles = StyleSheet.create({
-  screen: {
-    paddingHorizontal: 0,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: spacing.xl,
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: spacing.lg,
-    marginTop: spacing.md,
+    // Padding is set dynamically with safe area insets
   },
   section: {
     marginVertical: spacing.lg,
   },
-  sectionTitle: {
-    marginBottom: spacing.md,
-    textAlign: "center",
-  },
   alertsContainer: {
-    height: 400,
+    minHeight: 400,
   },
   favoritesSection: {
-    marginTop: spacing.xl,
-    marginBottom: spacing.xl,
-    alignItems: "center",
+    marginTop: spacing.xxxl,
+    marginBottom: spacing.xxxl,
+    paddingHorizontal: spacing.lg,
+  },
+  favoritesLabel: {
+    marginBottom: spacing.lg,
+    opacity: 0.6,
   },
 })
